@@ -7,6 +7,7 @@ from esphome.components.logger import LOG_LEVELS, is_log_level
 CONF_STRIP_COLORS = "strip_colors"
 CONF_ENABLE_LOGGER_MESSAGES = "enable_logger"
 CONF_MIN_LEVEL = "min_level"
+CONF_CLIENT_ID = "client_id"
 
 DEPENDENCIES = ['logger','network']
 
@@ -23,6 +24,7 @@ CONFIG_SCHEMA = cv.Schema({
     cv.Optional(CONF_ENABLE_LOGGER_MESSAGES, default=True): cv.boolean,
     cv.Optional(CONF_STRIP_COLORS, default=True): cv.boolean,
     cv.Optional(CONF_MIN_LEVEL, default="DEBUG"): is_log_level,
+    cv.Optional(CONF_CLIENT_ID): cv.string,
 })
 
 SYSLOG_LOG_ACTION_SCHEMA = cv.Schema({
@@ -42,6 +44,9 @@ def to_code(config):
     cg.add(var.set_strip_colors(config[CONF_STRIP_COLORS]))
     cg.add(var.set_server_ip(config[CONF_IP_ADDRESS]))
     cg.add(var.set_server_port(config[CONF_PORT]))
+    if config.get(CONF_CLIENT_ID):
+        cg.add(var.set_client_id(config[CONF_CLIENT_ID]))
+
     cg.add(var.set_min_log_level(LOG_LEVELS[config[CONF_MIN_LEVEL]]))
 
 @automation.register_action('syslog.log', SyslogLogAction, SYSLOG_LOG_ACTION_SCHEMA)
